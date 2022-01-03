@@ -20,6 +20,15 @@
             <li>
                 <button id="peers" onclick="peers()">peers</button>
             </li>
+            <li>
+                <form onsubmit="">
+                    <input type="number" placeholder="6001" id="inputport" />
+                    <input type="text" placeholder="6001" id="inputmessage" />
+                    <button id="sendMessage" onclick="sendMessage()">
+                        send
+                    </button>
+                </form>
+            </li>
         </ol>
         <div id="writefield"></div>
     </body>
@@ -53,7 +62,8 @@
 
         function addPeers() {
             let socketport = prompt(
-                '참여할 주소 입력하세요\n ex:ws://localhost:6001'
+                '참여할 주소 입력하세요\n ex:ws://localhost:6001',
+                'ws://localhost:6001'
             );
             axios
                 .post('/addPeers', {
@@ -72,6 +82,26 @@
                 document.getElementById('writefield').innerText =
                     JSON.stringify(data);
             });
+        }
+
+        function sendMessage() {
+            const inputdata = document.getElementById(`inputMessage`).value;
+            if (inputdata == '') {
+                inputdata = document
+                    .getElementById(`inputMessage`)
+                    .getAttribute(`placeholder`);
+                const ws = new WebSocket(inputdata);
+                ws.on('open', () => {
+                    console.log('open');
+                    initConnection(ws);
+                });
+                ws.on('message', (message) => {
+                    console.log(`received:${message}`);
+                });
+                ws.on('error', (errorType) => {
+                    console.log('connetion Failed!' + errorType);
+                });
+            }
         }
     </script>
 </html>

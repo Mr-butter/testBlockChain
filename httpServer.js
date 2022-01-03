@@ -33,7 +33,6 @@ function initHttpServer() {
     });
 
     app.get('/blocks', (req, res) => {
-        console.log(1);
         res.send(getBlocks());
     });
 
