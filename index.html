@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Block Chain</title>
+    </head>
+    <body>
+        <h1>Block Chain Test</h1>
+        <ol>
+            <li><button id="blocks" onclick="block()">get blocks</button></li>
+            <li>
+                <button id="mineBlock" onclick="mineBlock()">mineBlock</button>
+            </li>
+            <li><button id="version" onclick="version()">version</button></li>
+            <li>
+                <button id="addPeers" onclick="addPeers()">addPeers</button>
+            </li>
+            <li>
+                <button id="peers" onclick="peers()">peers</button>
+            </li>
+        </ol>
+        <div id="writefield"></div>
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+        function block() {
+            axios.get('/blocks').then((res) => {
+                const data = res.data;
+                document.getElementById('writefield').innerText =
+                    JSON.stringify(data);
+            });
+        }
+        function mineBlock() {
+            axios
+                .post('/mineBlock', {
+                    data: [{ transection: Math.random() * 1000 }],
+                })
+                .then((res) => {
+                    const data = res.data;
+                    document.getElementById('writefield').innerText =
+                        JSON.stringify(data);
+                });
+        }
+        function version() {
+            axios.get('/version').then((res) => {
+                const data = res.data;
+                document.getElementById('writefield').innerText =
+                    JSON.stringify(data);
+            });
+        }
+
+        function addPeers() {
+            let socketport = prompt(
+                '참여할 주소 입력하세요\n ex:ws://localhost:6001'
+            );
+            axios
+                .post('/addPeers', {
+                    data: [socketport],
+                })
+                .then((res) => {
+                    const data = res.data;
+                    document.getElementById('writefield').innerText =
+                        JSON.stringify(data);
+                });
+        }
+
+        function peers() {
+            axios.get('/peers').then((res) => {
+                const data = res.data;
+                document.getElementById('writefield').innerText =
+                    JSON.stringify(data);
+            });
+        }
+    </script>
+</html>
