@@ -1,22 +1,22 @@
 const p2p_port = process.env.P2P_PORT || 6001;
 
-const res = require('express/lib/response');
-const WebSocket = require('ws');
-const { getLastBlock, createHash } = require('./chainedBlock');
-const { addBlock } = require('./checkValidBlock');
+const res = require("express/lib/response");
+const WebSocket = require("ws");
+const { getLastBlock, createHash } = require("./chainedBlock");
+const { addBlock } = require("./checkValidBlock");
 
 function initP2PServer(test_port) {
     const server = new WebSocket.Server({ port: test_port });
     //console.log(server);
-    server.on('connection', (ws) => {
+    server.on("connection", (ws) => {
         initConnection(ws);
-        console.log(ws._socket._server);
-        ws.send('hello');
-        ws.on('message', (message) => {
+        // console.log(ws._socket._server);
+        ws.send("hello");
+        ws.on("message", (message) => {
             console.log(`received:${message}`);
         });
     });
-    console.log('Listening webSocket port : ' + test_port);
+    console.log("Listening webSocket port : " + test_port);
 }
 
 initP2PServer(6001);
@@ -55,15 +55,15 @@ function connectToPeers(newPeers) {
     newPeers.forEach((peer) => {
         const ws = new WebSocket(peer);
         console.log(ws);
-        ws.on('open', () => {
-            console.log('open');
+        ws.on("open", () => {
+            console.log("open");
             initConnection(ws);
         });
-        ws.on('message', (message) => {
+        ws.on("message", (message) => {
             console.log(`received:${message}`);
         });
-        ws.on('error', (errorType) => {
-            console.log('connetion Failed!' + errorType);
+        ws.on("error", (errorType) => {
+            console.log("connetion Failed!" + errorType);
         });
     });
 }
@@ -76,7 +76,7 @@ const MessageType = {
 };
 
 function initMessageHandler(ws) {
-    ws.on('message', (data) => {
+    ws.on("message", (data) => {
         const message = JSON.parse(data);
 
         switch (message.type) {
@@ -122,7 +122,7 @@ function handleBlockChainResponse(message) {
             if (addBlock(latestReceiveBlock)) {
                 broadcast(responseLatestMsg());
             } else {
-                console.log('Invalid Block!!');
+                console.log("Invalid Block!!");
             }
         }
         // 받은 블럭의 전체 크기가 1일 때
@@ -132,7 +132,7 @@ function handleBlockChainResponse(message) {
             replaceChain(receiveBlocks);
         }
     } else {
-        console.log('Do nothing.');
+        console.log("Do nothing.");
     }
 }
 
@@ -151,10 +151,10 @@ function queryLatestMsg() {
 }
 
 function initErrorHandler(ws) {
-    ws.on('close', () => {
+    ws.on("close", () => {
         closeConnection(ws);
     });
-    ws.on('error', () => {
+    ws.on("error", () => {
         closeConnection(ws);
     });
 }

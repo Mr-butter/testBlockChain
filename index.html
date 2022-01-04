@@ -21,12 +21,13 @@
                 <button id="peers" onclick="peers()">peers</button>
             </li>
             <li>
-                <form onsubmit="">
+                <button id="address" onclick="address()">address</button>
+            </li>
+            <li>
+                <form id="sendMessage_form">
                     <input type="number" placeholder="6001" id="inputport" />
                     <input type="text" placeholder="6001" id="inputmessage" />
-                    <button id="sendMessage" onclick="sendMessage()">
-                        send
-                    </button>
+                    <button id="sendMessage" type="submit">send</button>
                 </form>
             </li>
         </ol>
@@ -34,74 +35,65 @@
     </body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
     <script>
+        const WebSocket = require("ws");
+
         function block() {
-            axios.get('/blocks').then((res) => {
+            axios.get("/blocks").then((res) => {
                 const data = res.data;
-                document.getElementById('writefield').innerText =
+                document.getElementById("writefield").innerText =
                     JSON.stringify(data);
             });
         }
         function mineBlock() {
             axios
-                .post('/mineBlock', {
+                .post("/mineBlock", {
                     data: [{ transection: Math.random() * 1000 }],
                 })
                 .then((res) => {
                     const data = res.data;
-                    document.getElementById('writefield').innerText =
+                    document.getElementById("writefield").innerText =
                         JSON.stringify(data);
                 });
         }
         function version() {
-            axios.get('/version').then((res) => {
+            axios.get("/version").then((res) => {
                 const data = res.data;
-                document.getElementById('writefield').innerText =
+                document.getElementById("writefield").innerText =
                     JSON.stringify(data);
             });
         }
 
         function addPeers() {
             let socketport = prompt(
-                '참여할 주소 입력하세요\n ex:ws://localhost:6001',
-                'ws://localhost:6001'
+                "참여할 주소 입력하세요\n ex:ws://localhost:6001",
+                "ws://localhost:6001"
             );
             axios
-                .post('/addPeers', {
+                .post("/addPeers", {
                     data: [socketport],
                 })
                 .then((res) => {
                     const data = res.data;
-                    document.getElementById('writefield').innerText =
+                    document.getElementById("writefield").innerText =
                         JSON.stringify(data);
                 });
         }
 
         function peers() {
-            axios.get('/peers').then((res) => {
+            axios.get("/peers").then((res) => {
                 const data = res.data;
-                document.getElementById('writefield').innerText =
+                document.getElementById("writefield").innerText =
                     JSON.stringify(data);
             });
         }
 
-        function sendMessage() {
-            const inputdata = document.getElementById(`inputMessage`).value;
-            if (inputdata == '') {
-                inputdata = document
-                    .getElementById(`inputMessage`)
-                    .getAttribute(`placeholder`);
-                const ws = new WebSocket(inputdata);
-                ws.on('open', () => {
-                    console.log('open');
-                    initConnection(ws);
-                });
-                ws.on('message', (message) => {
-                    console.log(`received:${message}`);
-                });
-                ws.on('error', (errorType) => {
-                    console.log('connetion Failed!' + errorType);
-                });
-            }
+        function address() {
+            axios.get("/address").then((res) => {
+                const data = res.data;
+                document.getElementById("writefield").innerText =
+                    JSON.stringify(data);
+            });
         }
     </script>
+    <script src="./testp2p.js"></script>
 </html>
